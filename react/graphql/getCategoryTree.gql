@@ -1,0 +1,22 @@
+query getCategoryTree {
+  categories {
+    id
+    name
+    hasChildren
+    children {
+      id
+      name
+      hasChildren
+      children {
+        id
+        name
+        hasChildren
+        children {
+          id
+          name
+          hasChildren
+        }
+      }
+    }
+  }
+}

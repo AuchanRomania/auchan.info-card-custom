@@ -1,0 +1,15 @@
+{
+  "announcement-bar-list": {
+    "component": "NotificationBarList",
+    "content": {
+      "properties": {
+        "notifications": {
+          "type": "array",
+          "items": {
+            "$ref": "app:auchanqa.announcement-bar-list#/definitions/NotificationBar"
+          }
+        }
+      }
+    }
+  }
+}

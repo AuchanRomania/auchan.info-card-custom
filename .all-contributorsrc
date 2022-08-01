@@ -1,8 +1,8 @@
 {
-  "projectName": "react-app-template",
-  "projectOwner": "vtex-apps",
+  "projectName": "announcement-bar-list",
+  "projectOwner": "auchanqa",
   "repoType": "github",
-  "repoHost": "https://github.com",
+  "repoHost": "https://github.com/iviteb/announcement-bar-list",
   "files": [
     "docs/README.md"
   ],

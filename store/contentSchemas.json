@@ -1,0 +1,58 @@
+{
+  "definitions": {
+    "NotificationBar": {
+      "type": "object",
+      "description": "admin/editor.notification-bar.description",
+      "properties": {
+        "content": {
+          "title": "admin/editor.notification-bar.content.title",
+          "description": "admin/editor.notification-bar.content.description",
+          "$ref": "app:vtex.native-types#/definitions/text",
+          "default": ""
+        },
+        "color": {
+          "title": "admin/editor.notification-bar.color.title",
+          "$ref": "app:vtex.native-types#/definitions/text",
+          "enum": ["Dark Blue", "Green", "Red", "Light Blue", "Yellow"],
+          "widget": {
+            "ui:widget": "select"
+          },
+          "default": ""
+        },
+        "link": {
+          "title": "admin/editor.notification-bar.link.title",
+          "$ref": "app:vtex.native-types#/definitions/url",
+          "default": ""
+        },
+        "linkText": {
+          "title": "admin/editor.notification-bar.linkText.title",
+          "$ref": "app:vtex.native-types#/definitions/text",
+          "default": ""
+        },
+        "icon": {
+          "title": "admin/editor.notification-bar.icon.title",
+          "$ref": "app:vtex.native-types#/definitions/url",
+          "default": "",
+          "widget": {
+            "ui:widget": "image-uploader"
+          }
+        },
+        "categoryID": {
+          "title": "admin/editor.notification-bar.categoryID.title",
+          "$ref": "app:vtex.native-types#/definitions/text",
+          "default": ""
+        },
+        "sellerID": {
+          "title": "admin/editor.notification-bar.sellerID.title",
+          "$ref": "app:vtex.native-types#/definitions/text",
+          "default": ""
+        },
+        "blockClass": {
+          "title": "admin/editor.notification-bar.blockClass.title",
+          "$ref": "app:vtex.native-types#/definitions/text",
+          "default": ""
+        }
+      }
+    }
+  }
+}
