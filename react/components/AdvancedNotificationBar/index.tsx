@@ -6,6 +6,7 @@ import { CssHandlesList } from 'vtex.css-handles/react/CssHandlesTypes'
 import { useApolloClient } from 'react-apollo'
 import { useFullSession } from 'vtex.session-client'
 
+import { findMatchingCategory, getColorScheme } from '../../utils'
 import GET_CAT_TREE from '../../graphql/getCategoryTree.gql'
 import AnnounceClose from './icons/AnnounceClose'
 import AnnounceRight from './icons/AnnounceRight'
@@ -37,13 +38,6 @@ interface Props {
   sellerID?: string
   blockClass?: string
   classes?: CssHandlesTypes.CustomClasses<typeof CSS_HANDLES>
-}
-
-interface Category {
-  id: number
-  name: string
-  hasChildren: boolean
-  children: [Category]
 }
 
 function AdvancedNotificationBar({
@@ -83,22 +77,10 @@ function AdvancedNotificationBar({
 
   const pageID = route?.pageContext?.id
 
+  // Custom CSS class set from Admin for each announcement bar to differentiate them
   const block = ([blockClass] as CssHandlesList) ?? ([''] as CssHandlesList)
   const { handles: customBlockClass } = useCssHandles(block)
   const cssBlockClass = customBlockClass[Object.keys(customBlockClass)[0]]
-
-  const findMatchingCategory = (categories: [Category], findId: string) => {
-    for (const cat of categories) {
-      const result: any =
-        String(cat.id) === String(findId)
-          ? cat
-          : cat.hasChildren && findMatchingCategory(cat.children, findId)
-
-      if (result) {
-        return result
-      }
-    }
-  }
 
   const handleClose = () => {
     window?.sessionStorage?.setItem(
@@ -113,25 +95,29 @@ function AdvancedNotificationBar({
       query: GET_CAT_TREE,
     })
 
-    // matched finds the id from admin props to an id in any category
-    const matched = findMatchingCategory(
+    // matchedCategory finds the id from admin props to an id in any category; matches the current page id to the
+    // department / category / subcategory set in admin
+    const matchedCategory = findMatchingCategory(
       result?.data?.categories,
       String(catID)
     )
 
-    if (!matched || Object.keys(matched).length === 0) {
+    if (!matchedCategory) {
       return false
     }
 
     // check if the admin category matches the page id
-    if (String(matched?.id) === String(pageID)) {
+    if (String(matchedCategory?.id) === String(pageID)) {
       return true
     }
 
     // matchChildren checks if the current page id is found in the matched category or any of its children
-    const matchChildren = findMatchingCategory(matched?.children, pageID)
+    const matchChildren = findMatchingCategory(
+      matchedCategory?.children,
+      pageID
+    )
 
-    if (!matchChildren || Object.keys(matchChildren).length === 0) {
+    if (!matchChildren) {
       return false
     }
 
@@ -189,44 +175,9 @@ function AdvancedNotificationBar({
   }
 
   const hasLink = link && linkText
-  let background = ''
-  let iconBackground = ''
-  let secondaryTheme = false // for ex the yellow bar has brown icons and text
-  let fill = '#fff'
-
-  switch (color) {
-    case 'Dark Blue':
-      background = '#143D5F'
-      iconBackground = 'rgba(255, 255, 255, 0.1)'
-      break
-
-    case 'Green':
-      background = '#00AC6C'
-      iconBackground = 'rgba(0, 123, 77, 0.4)'
-      break
-
-    case 'Red':
-      background = '#ED002E'
-      iconBackground = '#D40029'
-      break
-
-    case 'Light Blue':
-      background = '#29A7CD'
-      iconBackground = '#1993B8'
-      break
-
-    case 'Yellow':
-      background = '#FFDE80'
-      iconBackground = 'rgba(204, 151, 0, 0.3)'
-      fill = '#775800'
-      secondaryTheme = true
-      break
-
-    default:
-      background = '#143D5F'
-      iconBackground = 'rgba(255, 255, 255, 0.1)'
-      break
-  }
+  const { background, iconBackground, fill, secondaryTheme } = getColorScheme(
+    color
+  )
 
   const textColor = secondaryTheme ? '#775800' : '#fff'
 
