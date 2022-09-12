@@ -8,6 +8,7 @@
     "@vtex/css-handles": "^1.1.3",
     "@vtex/insane": "^2.8.0",
     "apollo-client": "^2.5.1",
+    "axios": "^0.27.2",
     "classnames": "^2.2.5",
     "debounce": "^1.2.0",
     "downshift": "^3.2.10",

@@ -5,6 +5,7 @@ import { Link, useRuntime } from 'vtex.render-runtime'
 import { CssHandlesList } from 'vtex.css-handles/react/CssHandlesTypes'
 import { useApolloClient } from 'react-apollo'
 import { useFullSession } from 'vtex.session-client'
+import axios from 'axios'
 
 import { findMatchingCategory, getColorScheme } from '../../utils'
 import GET_CAT_TREE from '../../graphql/getCategoryTree.gql'
@@ -26,6 +27,10 @@ const CSS_HANDLES = [
   'notificationCloseIcon',
   'notificationArrowRight',
 ] as const
+
+interface Seller {
+  id: string
+}
 
 interface Props {
   content?: string
@@ -53,19 +58,28 @@ function AdvancedNotificationBar({
   classes,
 }: Props) {
   const { data, error } = useFullSession()
-  const [regionID, setRegionID] = useState('')
+  const [addressSellers, setAddressSellers] = useState([])
 
   if (error) {
     console.error('Notification list session error', error)
   }
 
+  const regionID = data?.session?.namespaces?.public?.regionId?.value
+
   useEffect(() => {
-    setRegionID(
-      (window as any).Base64.decode(
-        data?.session?.namespaces?.public?.regionId?.value ?? ''
-      )
-    )
-  }, [data])
+    if (!regionID) {
+      return
+    }
+
+    axios
+      .get(`/api/checkout/pub/regions/${regionID}`)
+      .then((response: any) => {
+        setAddressSellers(response?.data[0]?.sellers)
+      })
+      .catch((e) => {
+        console.error('Get Sellers api call error', e)
+      })
+  }, [regionID])
 
   const { route } = useRuntime()
   const client = useApolloClient()
@@ -124,8 +138,8 @@ function AdvancedNotificationBar({
     return true
   }
 
-  const handleMatchSeller = async (sellID: string, regionId: string) => {
-    if (sellID === regionId) {
+  const handleMatchSeller = async (sellID: string, sellers: Seller[]) => {
+    if (sellers.find((seller: Seller) => seller?.id === sellID)) {
       return true
     }
 
@@ -154,11 +168,11 @@ function AdvancedNotificationBar({
     }
 
     if (sellerID) {
-      handleMatchSeller(sellerID, regionID).then((result) => {
+      handleMatchSeller(sellerID, addressSellers).then((result) => {
         setMatchSeller(result)
       })
     }
-  }, [categoryID, client, notifBarIdx, pageID, sellerID, regionID])
+  }, [categoryID, client, notifBarIdx, pageID, sellerID, addressSellers])
 
   useEffect(() => {
     if (categoryID && sellerID) {
