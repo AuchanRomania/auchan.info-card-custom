@@ -5,7 +5,6 @@ import { Link, useRuntime } from 'vtex.render-runtime'
 import { CssHandlesList } from 'vtex.css-handles/react/CssHandlesTypes'
 import { useApolloClient } from 'react-apollo'
 import { useFullSession } from 'vtex.session-client'
-import axios from 'axios'
 
 import { findMatchingCategory, getColorScheme } from '../../utils'
 import GET_CAT_TREE from '../../graphql/getCategoryTree.gql'
@@ -71,14 +70,21 @@ function AdvancedNotificationBar({
       return
     }
 
-    axios
-      .get(`/api/checkout/pub/regions/${regionID}`)
-      .then((response: any) => {
-        setAddressSellers(response?.data[0]?.sellers)
-      })
-      .catch((e) => {
-        console.error('Get Sellers api call error', e)
-      })
+    const request = {
+      url: `/api/checkout/pub/regions/${regionID}`,
+      options: {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      },
+    }
+
+    fetch(request.url, request.options)
+      .then((response) => response.json())
+      .then((response) => setAddressSellers(response[0]?.sellers))
+      .catch((e) => console.error('Get Sellers api call error', e))
   }, [regionID])
 
   const { route } = useRuntime()
