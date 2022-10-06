@@ -4,7 +4,9 @@ import type { CssHandlesTypes } from 'vtex.css-handles'
 import { Link, useRuntime } from 'vtex.render-runtime'
 import { useApolloClient } from 'react-apollo'
 import { useFullSession } from 'vtex.session-client'
+import { marked } from 'marked'
 
+import './style.css'
 import { findMatchingCategory, getColorScheme } from '../../utils'
 import GET_CAT_TREE from '../../graphql/getCategoryTree.gql'
 import AnnounceClose from './icons/AnnounceClose'
@@ -24,6 +26,11 @@ const CSS_HANDLES = [
   'notificationBarIcon',
   'notificationCloseIcon',
   'notificationArrowRight',
+  'iconDiv',
+  'textDiv',
+  'notificationLink',
+  'notificationSeparator',
+  'rootDiv',
 ] as const
 
 interface Seller {
@@ -206,20 +213,17 @@ function AdvancedNotificationBar({
 
   return (
     <div
-      className={`${handles.notificationBarContainer} ${customBlockClass[customClass]} w-100 pv3 flex items-center`}
-      style={{ backgroundColor: background, height: '4.25rem' }}
+      className={`${handles.notificationBarContainer} ${customBlockClass[customClass]} ${handles.rootDiv} w-100 pv3 flex items-center`}
+      style={{ backgroundColor: background }}
     >
       <div
-        className={`${handles.notificationBarInner} w-100 flex pr5 justify-start`}
+        className={`${handles.notificationBarInner} w-100 flex pr5 justify-start items-center`}
       >
         <div
           style={{
             backgroundColor: iconBackground,
-            borderRadius: '0 6.25rem 6.25rem 0',
-            minWidth: '2.875rem',
-            minHeight: '2.875rem',
           }}
-          className={`${handles.notificationImageContainer} mr4 pa3 flex justify-center`}
+          className={`${handles.notificationImageContainer} ${handles.iconDiv} mr4 pa3 flex justify-center`}
         >
           {icon !== '' ? (
             <img
@@ -239,20 +243,19 @@ function AdvancedNotificationBar({
         </div>
 
         <div
-          className={`${handles.notificationContent} flex flex-column`}
-          style={{ maxWidth: 'max-content', justifyContent: 'space-evenly' }}
+          className={`${handles.notificationContent} ${handles.textDiv} flex flex-column`}
         >
           <p
             style={{ color: textColor }}
             className={`${handles.notificationText} link f6 fw4 lh-solid tl ma0 flex items-center`}
-          >
-            {content !== '' ? content : 'Announcement bar text content'}
-          </p>
+            dangerouslySetInnerHTML={{
+              __html: content !== '' ? marked.parse(content) : '',
+            }}
+          />
           {hasLink && (
             <Link
               to={link}
-              style={{ width: 'fit-content' }}
-              className={`${handles.notificationLink} flex items-center`}
+              className={`${handles.notificationLink} ${handles.notificationLink} flex items-center`}
             >
               <p
                 style={{ color: textColor }}
@@ -268,7 +271,7 @@ function AdvancedNotificationBar({
           )}
         </div>
 
-        <div style={{ flexGrow: 1 }} />
+        <div className={handles.notificationSeparator} />
 
         <button
           onClick={() => handleClose()}
