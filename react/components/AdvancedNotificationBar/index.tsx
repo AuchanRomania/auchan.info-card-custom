@@ -1,9 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import type { CssHandlesTypes } from 'vtex.css-handles'
 import { Link, useRuntime } from 'vtex.render-runtime'
 import { useApolloClient } from 'react-apollo'
-import { useFullSession } from 'vtex.session-client'
 import { marked } from 'marked'
 
 import './style.css'
@@ -12,6 +12,7 @@ import GET_CAT_TREE from '../../graphql/getCategoryTree.gql'
 import AnnounceClose from './icons/AnnounceClose'
 import AnnounceRight from './icons/AnnounceRight'
 import AnnounceInfo from './icons/AnnounceInfo'
+import useFetch from '../../hooks/useFetch'
 
 const CSS_HANDLES = [
   'notificationBarContainer',
@@ -62,36 +63,11 @@ function AdvancedNotificationBar({
   blockClass,
   classes,
 }: Props) {
-  const { data, error } = useFullSession()
-  const [addressSellers, setAddressSellers] = useState([])
+  const { data: addressSellers, error } = useFetch()
 
   if (error) {
     console.error('Notification list session error', error)
   }
-
-  const regionID = data?.session?.namespaces?.public?.regionId?.value
-
-  useEffect(() => {
-    if (!regionID) {
-      return
-    }
-
-    const request = {
-      url: `/api/checkout/pub/regions/${regionID}`,
-      options: {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-      },
-    }
-
-    fetch(request.url, request.options)
-      .then((response) => response.json())
-      .then((response) => setAddressSellers(response[0]?.sellers))
-      .catch((e) => console.error('Get Sellers api call error', e))
-  }, [regionID])
 
   const { route } = useRuntime()
   const client = useApolloClient()
@@ -150,7 +126,14 @@ function AdvancedNotificationBar({
     return true
   }
 
-  const handleMatchSeller = async (sellID: string, sellers: Seller[]) => {
+  const handleMatchSeller = async (
+    sellID: string,
+    sellers: Seller[] | null
+  ) => {
+    if (!sellers) {
+      return null
+    }
+
     if (sellers.find((seller: Seller) => seller?.id === sellID)) {
       return true
     }
@@ -181,7 +164,7 @@ function AdvancedNotificationBar({
 
     if (sellerID) {
       handleMatchSeller(sellerID, addressSellers).then((result) => {
-        setMatchSeller(result)
+        setMatchSeller(result ?? false)
       })
     }
   }, [categoryID, client, notifBarIdx, pageID, sellerID, addressSellers])

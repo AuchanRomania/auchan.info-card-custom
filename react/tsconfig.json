@@ -37,7 +37,8 @@
   "include": [
     "./typings/*.d.ts",
     "./**/*.tsx",
-    "./**/*.ts"
+    "./**/*.ts",
+    "hooks/useFetch.tsx"
   ],
   "typeAcquisition": {
     "enable": false
