@@ -1,7 +1,7 @@
 {
   "vendor": "auchan",
   "name": "announcement-bar-list",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "title": "Announcement Bar List",
   "description": "Announcement Bar List",
   "builders": {
