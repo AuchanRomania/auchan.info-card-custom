@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import type { CssHandlesTypes } from 'vtex.css-handles'
 import { Link, useRuntime } from 'vtex.render-runtime'
-import { CssHandlesList } from 'vtex.css-handles/react/CssHandlesTypes'
 import { useApolloClient } from 'react-apollo'
 import { useFullSession } from 'vtex.session-client'
 
@@ -98,9 +97,9 @@ function AdvancedNotificationBar({
   const pageID = route?.pageContext?.id
 
   // Custom CSS class set from Admin for each announcement bar to differentiate them
-  const block = ([blockClass] as CssHandlesList) ?? ([''] as CssHandlesList)
-  const { handles: customBlockClass } = useCssHandles(block)
-  const cssBlockClass = customBlockClass[Object.keys(customBlockClass)[0]]
+  const customClass = blockClass?.length ? blockClass : 'defaultHandle'
+
+  const { handles: customBlockClass } = useCssHandles([customClass])
 
   const handleClose = () => {
     window?.sessionStorage?.setItem(
@@ -207,7 +206,7 @@ function AdvancedNotificationBar({
 
   return (
     <div
-      className={`${handles.notificationBarContainer} ${cssBlockClass} w-100 pv3 flex items-center`}
+      className={`${handles.notificationBarContainer} ${customBlockClass[customClass]} w-100 pv3 flex items-center`}
       style={{ backgroundColor: background, height: '4.25rem' }}
     >
       <div
