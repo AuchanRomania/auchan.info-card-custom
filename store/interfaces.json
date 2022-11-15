@@ -6,7 +6,7 @@
         "notifications": {
           "type": "array",
           "items": {
-            "$ref": "app:auchan.announcement-bar-list#/definitions/NotificationBar"
+            "$ref": "app:auchanqa.announcement-bar-list#/definitions/NotificationBar"
           }
         }
       }
