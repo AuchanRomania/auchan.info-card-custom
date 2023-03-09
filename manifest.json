@@ -15,9 +15,22 @@
     "vtex.session-client": "1.x",
     "vtex.css-handles": "1.x",
     "vtex.store-graphql": "2.x",
-    "vtex.store-resources": "0.x"
+    "vtex.store-resources": "0.x",
+    "vtex.apps-graphql": "3.x"
   },
   "registries": ["smartcheckout"],
   "policies": [],
+  "settingsSchema": {
+    "title": "Announcement Bar List",
+    "type": "object",
+    "access": "public",
+    "properties": {
+      "defaultStoreID": {
+        "title": "Default Selected Store ID",
+        "type": "string",
+        "default": "rouqaauchantitan01"
+      }
+    }
+  },
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

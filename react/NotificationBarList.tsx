@@ -15,7 +15,7 @@ function NotificationBarList({ notifications }: NotificationListProps) {
   const { list } = useListContext() || []
 
   const imageListContent = notifications.map(({ ...props }, idx) => (
-    <div key={idx}>
+    <div key={JSON.stringify(props)}>
       <NotificationBar {...props} notifBarIdx={idx} />
     </div>
   ))

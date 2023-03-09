@@ -1,15 +1,15 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useCssHandles } from 'vtex.css-handles'
 import type { CssHandlesTypes } from 'vtex.css-handles'
 import { Link, useRuntime } from 'vtex.render-runtime'
-import { useApolloClient } from 'react-apollo'
+import { useApolloClient, useQuery } from 'react-apollo'
 import { marked } from 'marked'
 import { useFullSession } from 'vtex.session-client'
 
 import './style.css'
 import { findMatchingCategory, getColorScheme } from '../../utils'
 import GET_CAT_TREE from '../../graphql/getCategoryTree.gql'
+import APP_SETTINGS from '../../graphql/appSettings.gql'
 import AnnounceClose from './icons/AnnounceClose'
 import AnnounceRight from './icons/AnnounceRight'
 import AnnounceInfo from './icons/AnnounceInfo'
@@ -63,22 +63,34 @@ function AdvancedNotificationBar({
   blockClass,
   classes,
 }: Props) {
-  const { data, error } = useFullSession()
-  const [addressSellers, setAddressSellers] = useState([])
+  const { data: sessionData, error: sessionError } = useFullSession()
+  const { data: settingsData, error: settingsError } = useQuery(APP_SETTINGS)
+  const [addressSellers, setAddressSellers] = useState<Seller[]>([])
 
-  if (error) {
-    console.error('Notification list session error', error)
+  if (sessionError || settingsError) {
+    console.error('Notification list error', sessionError ?? settingsError)
   }
 
-  const regionID = data?.session?.namespaces?.public?.regionId?.value
+  const settingsStoreID = JSON.parse(
+    settingsData?.publicSettingsForApp?.message || '{}'
+  )?.defaultStoreID
+
+  const sessionStoreID =
+    sessionData?.session?.namespaces?.checkout?.regionId?.value
 
   useEffect(() => {
-    if (!regionID) {
+    if (!settingsStoreID && !sessionStoreID) {
+      return
+    }
+
+    if (!sessionStoreID) {
+      setAddressSellers([{ id: settingsStoreID }])
+
       return
     }
 
     const request = {
-      url: `/api/checkout/pub/regions/${regionID}`,
+      url: `/api/checkout/pub/regions/${sessionStoreID}`,
       options: {
         method: 'GET',
         headers: {
@@ -92,7 +104,7 @@ function AdvancedNotificationBar({
       .then((response) => response.json())
       .then((response) => setAddressSellers(response[0]?.sellers))
       .catch((e) => console.error('Get Sellers api call error', e))
-  }, [regionID])
+  }, [settingsStoreID, sessionStoreID])
 
   const { route } = useRuntime()
   const client = useApolloClient()
@@ -117,47 +129,53 @@ function AdvancedNotificationBar({
     setShow(false)
   }
 
-  const handleMatchCategory = async (catID: string) => {
-    const result = await client.query({
-      query: GET_CAT_TREE,
-    })
+  const handleMatchCategory = useCallback(
+    async (catID: string) => {
+      const result = await client.query({
+        query: GET_CAT_TREE,
+      })
 
-    // matchedCategory finds the id from admin props to an id in any category; matches the current page id to the
-    // department / category / subcategory set in admin
-    const matchedCategory = findMatchingCategory(
-      result?.data?.categories,
-      String(catID)
-    )
+      // matchedCategory finds the id from admin props to an id in any category; matches the current page id to the
+      // department / category / subcategory set in admin
+      const matchedCategory = findMatchingCategory(
+        result?.data?.categories,
+        String(catID)
+      )
 
-    if (!matchedCategory) {
-      return false
-    }
+      if (!matchedCategory) {
+        return false
+      }
 
-    // check if the admin category matches the page id
-    if (String(matchedCategory?.id) === String(pageID)) {
+      // check if the admin category matches the page id
+      if (String(matchedCategory?.id) === String(pageID)) {
+        return true
+      }
+
+      // matchChildren checks if the current page id is found in the matched category or any of its children
+      const matchChildren = findMatchingCategory(
+        matchedCategory?.children,
+        pageID
+      )
+
+      if (!matchChildren) {
+        return false
+      }
+
       return true
-    }
+    },
+    [client, pageID]
+  )
 
-    // matchChildren checks if the current page id is found in the matched category or any of its children
-    const matchChildren = findMatchingCategory(
-      matchedCategory?.children,
-      pageID
-    )
+  const handleMatchSeller = useCallback(
+    (sellID: string) => {
+      if (addressSellers.find((seller: Seller) => seller?.id === sellID)) {
+        return true
+      }
 
-    if (!matchChildren) {
       return false
-    }
-
-    return true
-  }
-
-  const handleMatchSeller = async (sellID: string, sellers: Seller[]) => {
-    if (sellers.find((seller: Seller) => seller?.id === sellID)) {
-      return true
-    }
-
-    return false
-  }
+    },
+    [addressSellers]
+  )
 
   useEffect(() => {
     if (
@@ -181,11 +199,17 @@ function AdvancedNotificationBar({
     }
 
     if (sellerID) {
-      handleMatchSeller(sellerID, addressSellers).then((result) => {
-        setMatchSeller(result)
-      })
+      const matchID = handleMatchSeller(sellerID)
+
+      setMatchSeller(matchID)
     }
-  }, [categoryID, client, notifBarIdx, pageID, sellerID, addressSellers])
+  }, [
+    categoryID,
+    sellerID,
+    notifBarIdx,
+    handleMatchCategory,
+    handleMatchSeller,
+  ])
 
   useEffect(() => {
     if (categoryID && sellerID) {
@@ -195,18 +219,15 @@ function AdvancedNotificationBar({
     } else if (categoryID && !sellerID) {
       setShow(matchCategory)
     }
-  }, [categoryID, matchCategory, matchSeller, sellerID])
+  }, [categoryID, sellerID, matchCategory, matchSeller])
 
   if (!content) {
     return null
   }
 
   const hasLink = link && linkText
-  const { background, iconBackground, fill, secondaryTheme } = getColorScheme(
-    color
-  )
-
-  const textColor = secondaryTheme ? '#775800' : '#fff'
+  const { background, iconBackground, fill } = getColorScheme(color)
+  const textColor = '#fff'
 
   if (!show) {
     return null

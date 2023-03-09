@@ -24,8 +24,7 @@ export const findMatchingCategory = (
 export const getColorScheme = (color?: string) => {
   let background = ''
   let iconBackground = ''
-  let secondaryTheme = false // for ex the yellow bar has brown icons and text
-  let fill = '#fff'
+  const fill = '#fff'
 
   switch (color) {
     case 'Dark Blue':
@@ -49,10 +48,8 @@ export const getColorScheme = (color?: string) => {
       break
 
     case 'Yellow':
-      background = '#FFDE80'
+      background = '#E85410'
       iconBackground = 'rgba(204, 151, 0, 0.3)'
-      fill = '#775800'
-      secondaryTheme = true
       break
 
     default:
@@ -61,5 +58,5 @@ export const getColorScheme = (color?: string) => {
       break
   }
 
-  return { background, iconBackground, fill, secondaryTheme }
+  return { background, iconBackground, fill }
 }
