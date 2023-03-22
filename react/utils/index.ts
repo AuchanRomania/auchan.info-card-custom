@@ -52,6 +52,11 @@ export const getColorScheme = (color?: string) => {
       iconBackground = 'rgba(204, 151, 0, 0.3)'
       break
 
+    case 'Orange':
+      background = '#F58A1F'
+      iconBackground = '#F05E22'
+      break
+
     default:
       background = '#143D5F'
       iconBackground = 'rgba(255, 255, 255, 0.1)'

@@ -10,7 +10,7 @@
   "admin/editor.notification-bar.color.title": "Color",
   "admin/editor.notification-bar.icon.title": "Icon - Upload SVG Icon (default is info icon)",
   "admin/editor.notification-bar.categoryID.title": "Category ID",
-  "admin/editor.notification-bar.sellerID.title": "Seller ID",
+  "admin/editor.notification-bar.sellerIDs.title": "Seller ID - Separated by comma",
   "admin/editor.notification-bar.blockClass.title": "Block Class for store theme styling",
   "admin/editor.notification-bar.icon.description": "Upload the SVG icon for the announcement bar. Default is the info icon."
 }

@@ -51,7 +51,7 @@ NotificationBarList.schema = {
         color: {
           title: 'admin/editor.notification-bar.color.title',
           $ref: 'app:vtex.native-types#/definitions/text',
-          enum: ['Dark Blue', 'Green', 'Red', 'Light Blue', 'Yellow'],
+          enum: ['Dark Blue', 'Green', 'Red', 'Light Blue', 'Yellow', 'Orange'],
           widget: {
             'ui:widget': 'select',
           },
@@ -80,8 +80,8 @@ NotificationBarList.schema = {
           $ref: 'app:vtex.native-types#/definitions/text',
           default: '',
         },
-        sellerID: {
-          title: 'admin/editor.notification-bar.sellerID.title',
+        sellerIDs: {
+          title: 'admin/editor.notification-bar.sellerIDs.title',
           $ref: 'app:vtex.native-types#/definitions/text',
           default: '',
         },

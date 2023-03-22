@@ -28,7 +28,7 @@
       "defaultStoreID": {
         "title": "Default Selected Store ID",
         "type": "string",
-        "default": "rouqaauchantitan01"
+        "default": "rouauchantitan01,rouqaauchantitan01"
       }
     }
   },

@@ -46,7 +46,7 @@ interface Props {
   icon?: string
   notifBarIdx?: number
   categoryID?: string
-  sellerID?: string
+  sellerIDs?: string
   blockClass?: string
   classes?: CssHandlesTypes.CustomClasses<typeof CSS_HANDLES>
 }
@@ -59,7 +59,7 @@ function AdvancedNotificationBar({
   icon,
   notifBarIdx,
   categoryID,
-  sellerID,
+  sellerIDs,
   blockClass,
   classes,
 }: Props) {
@@ -167,12 +167,19 @@ function AdvancedNotificationBar({
   )
 
   const handleMatchSeller = useCallback(
-    (sellID: string) => {
-      if (addressSellers.find((seller: Seller) => seller?.id === sellID)) {
-        return true
-      }
+    (sellIDs: string) => {
+      const parsedSellers = sellIDs.replace(/ /g, '').split(',')
+      let match = false
 
-      return false
+      parsedSellers.forEach((parsedSeller) => {
+        if (
+          addressSellers.find((seller: Seller) => seller?.id === parsedSeller)
+        ) {
+          match = true
+        }
+      })
+
+      return match
     },
     [addressSellers]
   )
@@ -186,7 +193,7 @@ function AdvancedNotificationBar({
       return
     }
 
-    if (!categoryID && !sellerID) {
+    if (!categoryID && !sellerIDs) {
       setShow(true)
 
       return
@@ -198,28 +205,28 @@ function AdvancedNotificationBar({
       })
     }
 
-    if (sellerID) {
-      const matchID = handleMatchSeller(sellerID)
+    if (sellerIDs) {
+      const matchID = handleMatchSeller(sellerIDs)
 
       setMatchSeller(matchID)
     }
   }, [
     categoryID,
-    sellerID,
+    sellerIDs,
     notifBarIdx,
     handleMatchCategory,
     handleMatchSeller,
   ])
 
   useEffect(() => {
-    if (categoryID && sellerID) {
+    if (categoryID && sellerIDs) {
       setShow(matchCategory && matchSeller)
-    } else if (!categoryID && sellerID) {
+    } else if (!categoryID && sellerIDs) {
       setShow(matchSeller)
-    } else if (categoryID && !sellerID) {
+    } else if (categoryID && !sellerIDs) {
       setShow(matchCategory)
     }
-  }, [categoryID, sellerID, matchCategory, matchSeller])
+  }, [categoryID, sellerIDs, matchCategory, matchSeller])
 
   if (!content) {
     return null
