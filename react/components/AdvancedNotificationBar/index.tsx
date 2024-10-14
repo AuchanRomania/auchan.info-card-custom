@@ -185,13 +185,10 @@ function AdvancedNotificationBar({
   )
 
   useEffect(() => {
-    if (
-      window?.sessionStorage?.getItem(
-        `closeNotificationBar-${notifBarIdx?.toString()}`
-      )
-    ) {
-      return
-    }
+    window?.sessionStorage?.setItem(
+      `closeNotificationBar-${notifBarIdx?.toString()}`,
+      'true'
+    )
 
     if (!categoryID && !sellerIDs) {
       setShow(true)
