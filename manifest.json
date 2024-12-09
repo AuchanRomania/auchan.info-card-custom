@@ -1,9 +1,9 @@
 {
   "vendor": "auchan",
-  "name": "announcement-bar-list",
-  "version": "0.0.8",
-  "title": "Announcement Bar List",
-  "description": "Announcement Bar List",
+  "name": "info-card-custom",
+  "version": "0.0.3",
+  "title": "Info Card Custom",
+  "description": "Info Card Custom",
   "builders": {
     "react": "3.x",
     "messages": "1.x",
@@ -11,26 +11,17 @@
     "store": "0.x"
   },
   "dependencies": {
-    "vtex.list-context": "0.x",
-    "vtex.session-client": "1.x",
     "vtex.css-handles": "1.x",
     "vtex.store-graphql": "2.x",
     "vtex.store-resources": "0.x",
-    "vtex.apps-graphql": "3.x"
+    "vtex.apps-graphql": "3.x",
+    "vtex.slider-layout": "0.x",
+    "vtex.styleguide": "9.x",
+    "vtex.native-types": "0.x",
+    "vtex.rich-text": "0.x"
   },
-  "registries": ["smartcheckout"],
-  "policies": [],
-  "settingsSchema": {
-    "title": "Announcement Bar List",
-    "type": "object",
-    "access": "public",
-    "properties": {
-      "defaultStoreID": {
-        "title": "Default Selected Store ID",
-        "type": "string",
-        "default": "rouauchantitan01,rouqaauchantitan01"
-      }
-    }
-  },
+  "registries": [
+    "smartcheckout"
+  ],
   "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }

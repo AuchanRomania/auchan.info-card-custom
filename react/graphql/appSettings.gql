@@ -1,6 +1,0 @@
-query AppSettings {
-  publicSettingsForApp(app: "auchan.announcement-bar-list", version: "0.x")
-    @context(provider: "vtex.apps-graphql") {
-    message
-  }
-}

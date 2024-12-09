@@ -1,15 +1,8 @@
 {
-  "announcement-bar-list": {
-    "component": "NotificationBarList",
-    "content": {
-      "properties": {
-        "notifications": {
-          "type": "array",
-          "items": {
-            "$ref": "app:auchan.announcement-bar-list#/definitions/NotificationBar"
-          }
-        }
-      }
-    }
+  "info-card-custom": {
+  "component": "InfoCardCustom",
+  "content": {
+    "$ref": "app:auchan.info-card-custom#/definitions/InfoCard"
   }
+}
 }
