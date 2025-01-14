@@ -41,5 +41,9 @@
   "admin/editor.info-card.callAction.button": "Button",
   "admin/editor.info-card.callAction.link": "Link",
   "admin/editor.info-card.imageActionUrl.title": "Image action URL",
-  "admin/editor.info-card.imageActionUrl.description": "Pass the URL to turn the image into a link and be able to redirect the user"
+  "admin/editor.info-card.imageActionUrl.description": "Pass the URL to turn the image into a link and be able to redirect the user",
+  "admin/editor.info-card.startDate.title": "Start Date",
+  "admin/editor.info-card.endDate.title":"End date",
+  "admin/editor.info-card.startDate.description": "The banner's start date",
+  "admin/editor.info-card.endDate.description": "The banner's end date"
 }

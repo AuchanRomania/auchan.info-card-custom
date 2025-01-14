@@ -3,6 +3,7 @@ export const textModeValues = {
   RICHTEXT: 'rich-text',
 }
 
+
 export const textPostionValues = {
   LEFT: 'left',
   CENTER: 'center',

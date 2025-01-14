@@ -20,6 +20,7 @@ import {
   textPostionValues,
   textAlignmentValues,
   textModeTypes,
+
 } from './SchemaTypes'
 import { SanitizedHTML } from '../SanitizedHTML'
 
@@ -100,6 +101,8 @@ const InfoCard = ({
   fetchpriority,
   preload,
 }) => {
+
+
   const {
     hints: { mobile },
   } = useRuntime()
@@ -281,6 +284,8 @@ MemoizedInfoCard.propTypes = {
   // https://developer.mozilla.org/en-US/docs/Web/HTML/Element/a
   linkTarget: oneOf(['_self', '_blank', '_parent', '_top']),
   callToActionLinkTarget: oneOf(['_self', '_blank', '_parent', '_top']),
+  startDate: PropTypes.string,
+  endDate: PropTypes.string,
 }
 
 MemoizedInfoCard.defaultProps = {
@@ -300,6 +305,8 @@ MemoizedInfoCard.defaultProps = {
   callToActionLinkTarget: '_self',
   fetchpriority: 'auto',
   preload: false,
+  startDate: '',
+  endDate: '',
 }
 
 MemoizedInfoCard.schema = {
@@ -356,6 +363,18 @@ MemoizedInfoCard.schema = {
       type: 'string',
       isLayout: true,
     },
+    startDate: {
+          title: 'admin/editor.info-card.startDate.title',
+          description: 'admin/editor.info-card.startDate.description',
+          type: 'string',
+          format:'date-time'
+        },
+        endDate: {
+          title: 'admin/editor.info-card.endDate.title',
+          description: 'admin/editor.info-card.endDate.description',
+          type: 'string',
+          format:'date-time'
+        }
   },
 }
 

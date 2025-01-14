@@ -119,6 +119,18 @@
           "title": "admin/editor.blockClass.title",
           "description": "admin/editor.blockClass.description",
           "type": "string"
+        },
+        "startDate": {
+          "title": "admin/editor.info-card.startDate.title",
+          "description": "admin/editor.info-card.startDate.description",
+          "type": "string",
+          "format":"date-time"
+        },
+        "endDate": {
+          "title": "admin/editor.info-card.endDate.title",
+          "description": "admin/editor.info-card.endDate.description",
+          "type": "string",
+          "format":"date-time"
         }
       }
     }
