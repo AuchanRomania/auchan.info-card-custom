@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add preload true to HP banners
+
 ## [0.1.1] - 2025-01-17
 
 ## [0.1.0] - 2025-01-16
