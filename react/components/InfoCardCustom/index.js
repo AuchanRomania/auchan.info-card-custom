@@ -142,11 +142,11 @@ const InfoCard = ({
 
   const containerStyle = isFullModeStyle
     ? {
-        /* If lazyloaded, the background image comes from the `data-bg` attribute
-         * below. Otherwise, sets it here as background-image */
-        ...(!lazyLoad && { backgroundImage: `url(${finalImageUrl})` }),
-        backgroundSize: 'cover',
-      }
+      /* If lazyloaded, the background image comes from the `data-bg` attribute
+       * below. Otherwise, sets it here as background-image */
+      ...(!lazyLoad && { backgroundImage: `url(${finalImageUrl})` }),
+      backgroundSize: 'cover',
+    }
     : {}
 
   const containerAttributes =
@@ -247,12 +247,8 @@ const InfoCard = ({
                 style={{ objectFit: 'cover' }}
                 alt={formatIOMessage({ id: callToActionText, intl })}
                 data-testid="half-image"
-                fetchPriority={fetchpriority}
-                {...(preload
-                  ? {
-                      'data-vtex-preload': 'true',
-                    }
-                  : {})}
+                fetchPriority="high"
+                data-vtex-preload="true"
               />
             </LinkWrapper>
           </div>
@@ -364,17 +360,17 @@ MemoizedInfoCard.schema = {
       isLayout: true,
     },
     startDate: {
-          title: 'admin/editor.info-card.startDate.title',
-          description: 'admin/editor.info-card.startDate.description',
-          type: 'string',
-          format:'date-time'
-        },
-        endDate: {
-          title: 'admin/editor.info-card.endDate.title',
-          description: 'admin/editor.info-card.endDate.description',
-          type: 'string',
-          format:'date-time'
-        }
+      title: 'admin/editor.info-card.startDate.title',
+      description: 'admin/editor.info-card.startDate.description',
+      type: 'string',
+      format: 'date-time'
+    },
+    endDate: {
+      title: 'admin/editor.info-card.endDate.title',
+      description: 'admin/editor.info-card.endDate.description',
+      type: 'string',
+      format: 'date-time'
+    }
   },
 }
 
