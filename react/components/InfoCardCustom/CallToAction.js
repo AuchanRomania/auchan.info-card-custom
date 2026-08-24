@@ -10,8 +10,8 @@ const CSS_HANDLES = ['infoCardCallActionContainer', 'infoCardCallActionText']
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noop = () => {}
 
-const CallToAction = ({ mode, text, url, linkTarget }) => {
-  const { handles } = useCssHandles(CSS_HANDLES)
+const CallToAction = ({ mode, text, url, linkTarget, blockClass }) => {
+  const { handles } = useCssHandles(CSS_HANDLES, { blockClass })
 
   if (mode === callActionValues.NONE) {
     return null
