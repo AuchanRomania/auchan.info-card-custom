@@ -87,10 +87,28 @@
             "ui:widget": "image-uploader"
           }
         },
+        "videoUrl": {
+          "title": "admin/editor.info-card.videoUrl.title",
+          "description": "admin/editor.info-card.videoUrl.description",
+          "$ref": "app:vtex.native-types#/definitions/url",
+          "default": ""
+        },
+        "mobileVideoUrl": {
+          "title": "admin/editor.info-card.mobileVideoUrl.title",
+          "description": "admin/editor.info-card.mobileVideoUrl.description",
+          "$ref": "app:vtex.native-types#/definitions/url",
+          "default": ""
+        },
         "imageActionUrl": {
           "title": "admin/editor.info-card.imageActionUrl.title",
           "description": "admin/editor.info-card.imageActionUrl.description",
           "$ref": "app:vtex.native-types#/definitions/url",
+          "default": ""
+        },
+        "imageAltText": {
+          "title": "admin/editor.info-card.imageAltText.title",
+          "description": "admin/editor.info-card.imageAltText.description",
+          "$ref": "app:vtex.native-types#/definitions/text",
           "default": ""
         },
         "textPosition": {

@@ -42,8 +42,14 @@
   "admin/editor.info-card.callAction.link": "Link",
   "admin/editor.info-card.imageActionUrl.title": "Image action URL",
   "admin/editor.info-card.imageActionUrl.description": "Pass the URL to turn the image into a link and be able to redirect the user",
+  "admin/editor.info-card.imageAltText.title": "Image alternative text",
+  "admin/editor.info-card.imageAltText.description": "Read by screen readers and search engines instead of the image: write the text on the banner or where its link goes. Empty: the call-to-action text is used, then the headline.",
   "admin/editor.info-card.startDate.title": "Start Date",
-  "admin/editor.info-card.endDate.title":"End date",
+  "admin/editor.info-card.endDate.title": "End date",
   "admin/editor.info-card.startDate.description": "The banner's start date",
-  "admin/editor.info-card.endDate.description": "The banner's end date"
+  "admin/editor.info-card.endDate.description": "The banner's end date",
+  "admin/editor.info-card.videoUrl.title": "Video (optional)",
+  "admin/editor.info-card.videoUrl.description": "MP4/WebM URL played over the image once the page has loaded. The image is still required: it is shown first and used as fallback.",
+  "admin/editor.info-card.mobileVideoUrl.title": "Mobile video (optional)",
+  "admin/editor.info-card.mobileVideoUrl.description": "Video for mobile, same proportions as the mobile image."
 }
