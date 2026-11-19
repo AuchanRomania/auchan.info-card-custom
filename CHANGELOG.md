@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Image priority, sizes, responsive `srcset`, alt text and optional video in order to fix layout shift
+
 ## [0.1.2] - 2025-12-03
 
 ### Added
