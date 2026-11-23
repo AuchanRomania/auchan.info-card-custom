@@ -89,13 +89,13 @@ const SRCSET_WIDTHS = [
   160, 240, 320, 400, 480, 640, 800, 1024, 1280, 1600, 1920, 2560,
 ]
 const FALLBACK_WIDTH = 1280
-const PHONE_MAX_WIDTH = 1024
+const PHONE_MAX_WIDTH = 800
 
 const getResizedUrl = (url, width) =>
   `${url}${url.includes('?') ? '&' : '?'}width=${width}&aspect=true`
 
-const getResponsiveImage = (url, priority, sizes, isLazy, maxWidth) => {
-  if (priority === undefined || priority === null || !RESIZABLE_IMAGE.test(url)) {
+const getResponsiveImage = (url, sizes, isLazy, maxWidth) => {
+  if (!RESIZABLE_IMAGE.test(url)) {
     return { src: url }
   }
 
@@ -109,10 +109,6 @@ const getResponsiveImage = (url, priority, sizes, isLazy, maxWidth) => {
 }
 
 const getImageLoadingProps = (priority, isDuplicated) => {
-  if (priority === undefined || priority === null) {
-    return { fetchpriority: 'high', 'data-vtex-preload': 'true' }
-  }
-
   if (isPriorityImage(priority, isDuplicated)) {
     return {
       loading: 'eager',
@@ -295,7 +291,6 @@ const InfoCard = ({
 
   const responsiveImage = getResponsiveImage(
     finalImageUrl,
-    priority,
     finalImageSizes,
     loadingProps.loading === 'lazy',
     phone ? PHONE_MAX_WIDTH : Infinity

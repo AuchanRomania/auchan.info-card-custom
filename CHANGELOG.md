@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Image priority, sizes, responsive `srcset`, alt text and optional video in order to fix layout shift
 
+### Changed
+
+- ECD-2897 Every Site Editor image gets a responsive `srcset`, cards are lazy unless the list marks them as priority, and phones load at most the 800px file
+
 ## [0.1.2] - 2025-12-03
 
 ### Added
