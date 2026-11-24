@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ECD-2897 Every Site Editor image gets a responsive `srcset`, cards are lazy unless the list marks them as priority, and phones load at most the 800px file
 
+### Fixed
+
+- ECD-2897 Cards rendered in the browser set `loading` before `src`, so they stay lazy and load at their displayed width
+
 ## [0.1.2] - 2025-12-03
 
 ### Added

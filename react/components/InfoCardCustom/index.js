@@ -299,13 +299,13 @@ const InfoCard = ({
   const image = (
     <img
       className={handles.infoCardImage}
+      {...loadingProps}
       {...responsiveImage}
       style={imageStyle}
       alt={imageAlt}
       data-testid="half-image"
       width={finalImageWidth}
       height={finalImageHeight}
-      {...loadingProps}
     />
   )
 
