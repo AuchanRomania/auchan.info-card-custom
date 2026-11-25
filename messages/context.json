@@ -42,8 +42,14 @@
   "admin/editor.info-card.callAction.link": "Name of enum value to make CTA a link",
   "admin/editor.info-card.imageActionUrl.title": "Name of imageActionUrl property",
   "admin/editor.info-card.imageActionUrl.description": "Name of imageActionUrl description",
+  "admin/editor.info-card.imageAltText.title": "Site Editor label for the image alt text",
+  "admin/editor.info-card.imageAltText.description": "Site Editor help text for the image alt text",
   "admin/editor.info-card.startDate.title": "Data de inceput",
-  "admin/editor.info-card.endDate.title":"Data de incheiere",
+  "admin/editor.info-card.endDate.title": "Data de incheiere",
   "admin/editor.info-card.startDate.description": "Data inceperii bannerului",
-  "admin/editor.info-card.endDate.description": "Data de incheierii a bannerului"
+  "admin/editor.info-card.endDate.description": "Data de incheierii a bannerului",
+  "admin/editor.info-card.videoUrl.title": "Site Editor label for the optional banner video URL",
+  "admin/editor.info-card.videoUrl.description": "Site Editor help text for the optional banner video URL",
+  "admin/editor.info-card.mobileVideoUrl.title": "Site Editor label for the optional mobile banner video URL",
+  "admin/editor.info-card.mobileVideoUrl.description": "Site Editor help text for the optional mobile banner video URL"
 }

@@ -8,13 +8,24 @@ import { callActionValues } from './SchemaTypes'
 const CSS_HANDLES = ['infoCardCallActionContainer', 'infoCardCallActionText']
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-const noop = () => {}
+const noop = () => { }
 
-const CallToAction = ({ mode, text, url, linkTarget }) => {
+const CallToAction = ({ mode, text, label, url, linkTarget }) => {
   const { handles } = useCssHandles(CSS_HANDLES)
 
   if (mode === callActionValues.NONE) {
     return null
+  }
+
+  if (!text) {
+    return (
+      <Link
+        className={`${handles.infoCardCallActionContainer} mt6 mb6`}
+        target={linkTarget}
+        to={url}
+        aria-label={label || undefined}
+      />
+    )
   }
 
   // eslint-disable-next-line no-shadow

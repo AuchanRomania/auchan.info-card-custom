@@ -4,6 +4,7 @@ import React, { memo } from 'react'
 import { values } from 'ramda'
 import { injectIntl } from 'react-intl'
 import {
+  Helmet,
   useRuntime,
   useExperimentalLazyImagesContext,
 } from 'vtex.render-runtime'
@@ -11,6 +12,7 @@ import { formatIOMessage } from 'vtex.native-types'
 import { useCssHandles } from 'vtex.css-handles'
 import RichText from 'vtex.rich-text/index'
 
+import BannerVideo from './BannerVideo'
 import CallToAction from './CallToAction'
 import LinkWrapper from './LinkWrapper'
 import {
@@ -23,6 +25,7 @@ import {
 
 } from './SchemaTypes'
 import { SanitizedHTML } from '../SanitizedHTML'
+import styles from './styles.css'
 
 const ALLOWED_TAGS = ['p', 'span', 'a', 'div', 'br']
 const ALLOWED_ATTRS = {
@@ -69,6 +72,60 @@ const safelyGetToken = (tokenMap, valueWanted, propName) =>
 const getImageUrl = (isMobile, imageUrl, mobileImageUrl) =>
   !!mobileImageUrl && isMobile ? mobileImageUrl : imageUrl
 
+const isPriorityImage = (priority, isDuplicated) => !!priority && !isDuplicated
+
+const toPlainText = text =>
+  (text || '')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/[*#`]/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim()
+
+const RESIZABLE_IMAGE = /\.vtexassets\.com\/assets\/vtex\.file-manager-graphql\/images\//
+const SRCSET_WIDTHS = [
+  160, 240, 320, 400, 480, 640, 800, 1024, 1280, 1600, 1920, 2560,
+]
+const FALLBACK_WIDTH = 1280
+const PHONE_MAX_WIDTH = 800
+
+const getResizedUrl = (url, width) =>
+  `${url}${url.includes('?') ? '&' : '?'}width=${width}&aspect=true`
+
+const getResponsiveImage = (url, sizes, useAutoSizes, maxWidth) => {
+  if (!RESIZABLE_IMAGE.test(url)) {
+    return { src: url }
+  }
+
+  const widths = SRCSET_WIDTHS.filter(width => width <= maxWidth)
+
+  return {
+    src: getResizedUrl(url, Math.min(FALLBACK_WIDTH, maxWidth)),
+    srcSet: widths.map(width => `${getResizedUrl(url, width)} ${width}w`).join(', '),
+    sizes: useAutoSizes ? `auto, ${sizes}` : sizes,
+  }
+}
+
+const getImageLoadingProps = (priority, isDuplicated) => {
+  if (isPriorityImage(priority, isDuplicated)) {
+    return {
+      loading: 'eager',
+      fetchpriority: 'high',
+      crossOrigin: 'anonymous',
+    }
+  }
+
+  return { loading: 'lazy', decoding: 'async' }
+}
+
+const toPositiveNumber = (value) => {
+  const number = Number(value)
+
+  return Number.isFinite(number) && number > 0 ? number : undefined
+}
+
 const CSS_HANDLES = [
   'infoCardImageLinkWrapper',
   'infoCardContainer',
@@ -94,17 +151,26 @@ const InfoCard = ({
   imageUrl,
   mobileImageUrl,
   imageActionUrl,
+  imageAltText,
   intl,
   htmlId,
   textMode,
   linkTarget,
-  fetchpriority,
-  preload,
+  priority,
+  imageWidth,
+  imageHeight,
+  mobileImageWidth,
+  mobileImageHeight,
+  imageSizes,
+  mobileImageSizes,
+  videoUrl,
+  mobileVideoUrl,
+  __isDuplicated,
 }) => {
 
 
   const {
-    hints: { mobile },
+    hints: { mobile, phone },
   } = useRuntime()
 
   const { lazyLoad } = useExperimentalLazyImagesContext()
@@ -134,11 +200,42 @@ const InfoCard = ({
     'textPosition'
   )
 
+  const formattedImageUrl = formatIOMessage({ id: imageUrl, intl })
+  const formattedMobileImageUrl = formatIOMessage({ id: mobileImageUrl, intl })
+  const isMobileAsset = !!formattedMobileImageUrl && !!mobile
+
   const finalImageUrl = getImageUrl(
     mobile,
-    formatIOMessage({ id: imageUrl, intl }),
-    formatIOMessage({ id: mobileImageUrl, intl })
+    formattedImageUrl,
+    formattedMobileImageUrl
   )
+
+  const finalImageWidth = toPositiveNumber(
+    isMobileAsset ? mobileImageWidth : imageWidth
+  )
+
+  const finalImageHeight = toPositiveNumber(
+    isMobileAsset ? mobileImageHeight : imageHeight
+  )
+
+  const formattedVideoUrl = formatIOMessage({ id: videoUrl, intl })
+  const formattedMobileVideoUrl = formatIOMessage({ id: mobileVideoUrl, intl })
+
+  const finalVideoUrl = mobile
+    ? formattedMobileVideoUrl || (!isMobileAsset ? formattedVideoUrl : '')
+    : formattedVideoUrl
+
+  const formattedCallToActionText = formatIOMessage({
+    id: callToActionText,
+    intl,
+  })
+
+  const headlineText = toPlainText(formatIOMessage({ id: headline, intl }))
+
+  const imageAlt =
+    formatIOMessage({ id: imageAltText, intl }) ||
+    formattedCallToActionText ||
+    (formatIOMessage({ id: imageActionUrl, intl }) ? headlineText : '')
 
   const containerStyle = isFullModeStyle
     ? {
@@ -178,6 +275,61 @@ const InfoCard = ({
 
   const bodyTextClasses = `${handles.infoCardBodyText} t-body mt6 c-on-base ${alignToken} mw-100`
 
+  const imageStyle =
+    finalImageWidth && finalImageHeight
+      ? {
+        objectFit: 'cover',
+        height: 'auto',
+        aspectRatio: `${finalImageWidth} / ${finalImageHeight}`,
+      }
+      : { objectFit: 'cover' }
+
+  const loadingProps = getImageLoadingProps(priority, __isDuplicated)
+
+  const finalImageSizes =
+    (mobile ? mobileImageSizes || imageSizes : imageSizes) || '100vw'
+
+  // `sizes="auto"` makes the browser apply `contain: size` with a 300x150 fallback,
+  // so it is only safe when the image has width and height to keep its ratio
+  const responsiveImage = getResponsiveImage(
+    finalImageUrl,
+    finalImageSizes,
+    loadingProps.loading === 'lazy' && !!finalImageWidth && !!finalImageHeight,
+    phone ? PHONE_MAX_WIDTH : Infinity
+  )
+
+  const image = (
+    <img
+      className={handles.infoCardImage}
+      {...loadingProps}
+      {...responsiveImage}
+      style={imageStyle}
+      alt={imageAlt}
+      data-testid="half-image"
+      width={finalImageWidth}
+      height={finalImageHeight}
+    />
+  )
+
+  const preload =
+    !isFullModeStyle &&
+      finalImageUrl &&
+      isPriorityImage(priority, __isDuplicated) ? (
+      <Helmet>
+        <link
+          rel="preload"
+          as="image"
+          href={responsiveImage.src}
+          {...(responsiveImage.srcSet && {
+            imagesrcset: responsiveImage.srcSet,
+            imagesizes: responsiveImage.sizes,
+          })}
+          fetchpriority="high"
+          crossOrigin="anonymous"
+        />
+      </Helmet>
+    ) : null
+
   return (
     <LinkWrapper
       imageActionUrl={formatIOMessage({ id: imageActionUrl, intl })}
@@ -191,6 +343,7 @@ const InfoCard = ({
         id={htmlId}
         {...containerAttributes}
       >
+        {preload}
         <div className={textContainerClasses}>
           {headline &&
             (textMode === 'html' ? (
@@ -230,7 +383,8 @@ const InfoCard = ({
             ))}
           <CallToAction
             mode={callToActionMode}
-            text={formatIOMessage({ id: callToActionText, intl })}
+            text={formattedCallToActionText}
+            label={headlineText}
             url={formatIOMessage({ id: callToActionUrl, intl })}
             linkTarget={callToActionLinkTarget}
           />
@@ -241,15 +395,18 @@ const InfoCard = ({
               imageActionUrl={formatIOMessage({ id: imageActionUrl, intl })}
               linkProps={{ target: linkTarget }}
             >
-              <img
-                className={handles.infoCardImage}
-                src={finalImageUrl}
-                style={{ objectFit: 'cover' }}
-                alt={formatIOMessage({ id: callToActionText, intl })}
-                data-testid="half-image"
-                fetchPriority="high"
-                data-vtex-preload="true"
-              />
+              {finalVideoUrl ? (
+                <span className={styles.infoCardVideoFrame}>
+                  {image}
+                  <BannerVideo
+                    src={finalVideoUrl}
+                    width={finalImageWidth}
+                    height={finalImageHeight}
+                  />
+                </span>
+              ) : (
+                image
+              )}
             </LinkWrapper>
           </div>
         )}
@@ -274,6 +431,7 @@ MemoizedInfoCard.propTypes = {
   mobileImageUrl: string,
   textAlignment: oneOf(getEnumValues(textAlignmentTypes)),
   imageActionUrl: string,
+  imageAltText: string,
   intl: PropTypes.object,
   htmlId: string,
   textMode: oneOf(getEnumValues(textModeTypes)),
@@ -282,6 +440,15 @@ MemoizedInfoCard.propTypes = {
   callToActionLinkTarget: oneOf(['_self', '_blank', '_parent', '_top']),
   startDate: PropTypes.string,
   endDate: PropTypes.string,
+  priority: bool,
+  imageWidth: PropTypes.number,
+  imageHeight: PropTypes.number,
+  mobileImageWidth: PropTypes.number,
+  mobileImageHeight: PropTypes.number,
+  imageSizes: string,
+  mobileImageSizes: string,
+  videoUrl: string,
+  mobileVideoUrl: string,
 }
 
 MemoizedInfoCard.defaultProps = {
@@ -295,12 +462,13 @@ MemoizedInfoCard.defaultProps = {
   callToActionUrl: '',
   imageUrl: '',
   mobileImageUrl: '',
+  imageAltText: '',
   textAlignment: textAlignmentTypes.TEXT_ALIGNMENT_LEFT.value,
   textMode: textModeTypes.TEXT_MODE_HTML.value,
   linkTarget: '_self',
   callToActionLinkTarget: '_self',
-  fetchpriority: 'auto',
-  preload: false,
+  videoUrl: '',
+  mobileVideoUrl: '',
   startDate: '',
   endDate: '',
 }

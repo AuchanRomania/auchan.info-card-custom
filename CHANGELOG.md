@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Image priority, sizes, responsive `srcset`, alt text and optional video in order to fix layout shift
+
+### Changed
+
+- ECD-2897 Every Site Editor image gets a responsive `srcset`, cards are lazy unless the list marks them as priority, and phones load at most the 800px file
+
+### Fixed
+
+- Lazy cards without `imageWidth`/`imageHeight` no longer get `sizes="auto"`, which cut their image to 150px high
+- ECD-2897 Cards rendered in the browser set `loading` before `src`, so they stay lazy and load at their displayed width
+
 ## [0.1.2] - 2025-12-03
 
 ### Added

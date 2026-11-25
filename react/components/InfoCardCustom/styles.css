@@ -1,0 +1,22 @@
+.infoCardVideoFrame {
+  position: relative;
+  display: block;
+}
+
+.infoCardVideo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  pointer-events: none;
+}
+
+.infoCardVideo--playing {
+  opacity: 1;
+}
