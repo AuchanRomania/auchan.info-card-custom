@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Lazy cards without `imageWidth`/`imageHeight` no longer get `sizes="auto"`, which cut their image to 150px high
 - ECD-2897 Cards rendered in the browser set `loading` before `src`, so they stay lazy and load at their displayed width
 
 ## [0.1.2] - 2025-12-03

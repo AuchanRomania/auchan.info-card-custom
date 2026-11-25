@@ -94,7 +94,7 @@ const PHONE_MAX_WIDTH = 800
 const getResizedUrl = (url, width) =>
   `${url}${url.includes('?') ? '&' : '?'}width=${width}&aspect=true`
 
-const getResponsiveImage = (url, sizes, isLazy, maxWidth) => {
+const getResponsiveImage = (url, sizes, useAutoSizes, maxWidth) => {
   if (!RESIZABLE_IMAGE.test(url)) {
     return { src: url }
   }
@@ -104,7 +104,7 @@ const getResponsiveImage = (url, sizes, isLazy, maxWidth) => {
   return {
     src: getResizedUrl(url, Math.min(FALLBACK_WIDTH, maxWidth)),
     srcSet: widths.map(width => `${getResizedUrl(url, width)} ${width}w`).join(', '),
-    sizes: isLazy ? `auto, ${sizes}` : sizes,
+    sizes: useAutoSizes ? `auto, ${sizes}` : sizes,
   }
 }
 
@@ -289,10 +289,12 @@ const InfoCard = ({
   const finalImageSizes =
     (mobile ? mobileImageSizes || imageSizes : imageSizes) || '100vw'
 
+  // `sizes="auto"` makes the browser apply `contain: size` with a 300x150 fallback,
+  // so it is only safe when the image has width and height to keep its ratio
   const responsiveImage = getResponsiveImage(
     finalImageUrl,
     finalImageSizes,
-    loadingProps.loading === 'lazy',
+    loadingProps.loading === 'lazy' && !!finalImageWidth && !!finalImageHeight,
     phone ? PHONE_MAX_WIDTH : Infinity
   )
 
